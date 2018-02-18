@@ -40,6 +40,7 @@
         <swagger-core.version>1.5.18</swagger-core.version>
         <swagger-annotations.version>1.5.18</swagger-annotations.version>
         <apache.commons-codec.version>1.11</apache.commons-codec.version>
+        <springfox-swagger2.version>2.7.0</springfox-swagger2.version>
 	</properties>
 
 
@@ -123,21 +124,20 @@
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson-annotations.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-core</artifactId>
-                <version>${swagger-core.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox-swagger2.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger-annotations.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-data-rest</artifactId>
+                <version>${springfox-swagger2.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${apache.commons-codec.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox-swagger2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -220,16 +220,20 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-data-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
     </dependencies>
 

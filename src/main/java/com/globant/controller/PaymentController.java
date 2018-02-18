@@ -8,6 +8,9 @@ import com.globant.service.PaymentService;
 import com.globant.util.DTOUtils;
 import com.globant.util.EncryptingUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api
+@Api(value = "payment-service", tags = {"PaymentController"})
 @Slf4j
 @RequestMapping("/payment")
 @RestController
@@ -33,6 +36,13 @@ public class PaymentController {
 
 
     @Timer
+    @ApiOperation(value = "Create a payment", response = PaymentDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully created payment"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PutMapping(path = "/{clientId}/{orderId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO> createPayment(@PathVariable(name = "clientId") String clientId,
                                                     @PathVariable(name = "orderId") String orderId,
@@ -52,6 +62,13 @@ public class PaymentController {
     }
 
     @Timer
+    @ApiOperation(value = "Retrieve a payment", response = PaymentDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved payment"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO> getPayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
         if (log.isDebugEnabled())
@@ -65,6 +82,13 @@ public class PaymentController {
     }
 
     @Timer
+    @ApiOperation(value = "Retrieve multiple payments", response = PaymentDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved payments"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus getPayments(@PathVariable(name = "clientId") String clientId) throws Exception {
         if (log.isDebugEnabled())
@@ -85,6 +109,13 @@ public class PaymentController {
     }
 
     @Timer
+    @ApiOperation(value = "Update payment", response = HttpStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated payment"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PostMapping(path = "/{paymentId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updatePayment(@PathVariable(name = "paymentId") String paymentId,
                                     @PathVariable(name = "amount") String amount) throws Exception {
@@ -104,6 +135,13 @@ public class PaymentController {
     }
 
     @Timer
+    @ApiOperation(value = "Update payment", response = HttpStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated payment"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @DeleteMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deletePayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
         if (log.isDebugEnabled())

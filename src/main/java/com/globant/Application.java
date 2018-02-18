@@ -2,12 +2,13 @@ package com.globant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration;
 
 
-@EnableWebMvc
 @EnableJpaRepositories
+@Import(SpringDataRestConfiguration.class)
 @SpringBootApplication
 public class Application {
 

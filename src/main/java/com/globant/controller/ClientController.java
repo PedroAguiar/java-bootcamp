@@ -8,6 +8,9 @@ import com.globant.service.OrderService;
 import com.globant.service.PaymentService;
 import com.globant.util.DTOUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api
+@Api(value = "payment-service", tags = {"ClientController"})
 @Slf4j
 @RestController
 @RequestMapping("/client")
@@ -32,6 +35,13 @@ public class ClientController {
     private ClientService clientService;
 
     @Timer
+    @ApiOperation(value = "Create a client", response = ClientDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully created client"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PutMapping(path = "/{name}/{lastName}/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClientDTO> createClient(@PathVariable(name = "name") String name,
                                                   @PathVariable(name = "lastName") String lastName,
@@ -51,6 +61,13 @@ public class ClientController {
     }
 
     @Timer
+    @ApiOperation(value = "Retrieve a client", response = ClientDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved client"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClientDTO> getClient(@PathVariable(name = "clientId") String clientId) throws Exception {
         if (log.isDebugEnabled())
@@ -64,6 +81,13 @@ public class ClientController {
     }
 
     @Timer
+    @ApiOperation(value = "Update a client", response = ClientDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated client"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PostMapping(path = "/{clientId}/{name}/{lastName}}/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateClient(@PathVariable(name = "clientId") String clientId,
                                    @PathVariable(name = "name") String name,
@@ -86,6 +110,13 @@ public class ClientController {
     }
 
     @Timer
+    @ApiOperation(value = "Delete a client", response = ClientDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully deleted client"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @DeleteMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteClient(@PathVariable(name = "clientId") String clientId) throws Exception {
         if (log.isDebugEnabled())

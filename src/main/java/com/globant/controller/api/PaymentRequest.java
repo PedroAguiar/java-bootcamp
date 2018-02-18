@@ -2,7 +2,9 @@ package com.globant.controller.api;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,21 +15,21 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "PaymentRequest", description = "Payment Request")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PaymentRequest {
 
-    @JsonProperty(required = false)
+    @ApiModelProperty(value = "client id")
     private String clientId;
-    @JsonProperty(required = false)
+    @ApiModelProperty(value = "client last name")
     private String clientLastName;
-    @JsonProperty(required = false)
+    @ApiModelProperty(value = "client name")
     private String clientName;
-    @JsonProperty(required = false)
+    @ApiModelProperty(value = "client description")
     private String clientDescription;
-    @JsonProperty(required = false)
+    @ApiModelProperty(value = "payment amount")
     private String paymentAmount;
-    @JsonProperty(required = false)
+    @ApiModelProperty(value = "item names")
     private List<String> itemNames;
-
-
 
 }

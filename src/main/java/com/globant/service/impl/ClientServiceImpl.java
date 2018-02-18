@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,10 +29,6 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client createClient(ClientDTO clientDTO) throws Exception {
         Validate.notNull(clientDTO);
-        Client client = clientRepository.findByNameAndLastName(clientDTO.getName(), clientDTO.getLastName());
-        //TODO: Validation
-
-
         return clientRepository.save(ModelUtils.toClient.apply(clientDTO));
     }
 

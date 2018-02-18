@@ -1,5 +1,6 @@
 package com.globant.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "PEDIDO")
+@ApiModel(value = "Order", description = "Order Entity")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {

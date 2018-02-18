@@ -15,14 +15,25 @@ spring:
       ddl-auto: create-drop
       format_sql: true
     show-sql: true
+  application:
+    name: "Payment Service"
 
-swagger: '2.0'
+swagger:
+  service:
+    version: "0.0.1"
+    title: ${spring.application.name}
+    description: "This is a simple API"
+    termsPath: ""
+    email: "noreply@example.com"
+    licenceType: ""
+    licencePath: ""
+
 info:
   description: This is a simple API
   version: 1.0.0
   title: Simple Payments API
   contact:
-    email: pedro.aguiar@globant.com
+    email: someone@example.com
 
   license:
     name: Apache 2.0

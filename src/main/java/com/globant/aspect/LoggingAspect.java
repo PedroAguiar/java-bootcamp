@@ -15,13 +15,13 @@ public class LoggingAspect {
 
     @Around(value = "@annotation(com.globant.aspect.annotation.Timer)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         Object result = proceedingJoinPoint.proceed();
 
-        long endTime = System.currentTimeMillis();
+        long endTime = System.nanoTime();
 
-        LOGGER.info("Method executed in {}ms ", endTime - startTime);
+        LOGGER.info("Method executed in {}ns ", endTime - startTime);
         return result;
     }
 }

@@ -1,23 +1,29 @@
 package com.globant.controller.api;
 
+import com.globant.aspect.annotation.Timer;
 import com.globant.controller.ClientController;
 import com.globant.controller.ItemController;
 import com.globant.controller.OrderController;
 import com.globant.controller.PaymentController;
 import com.globant.dto.ClientDTO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Api
+@Api(value = "payment-service", tags = {"API Gateway"})
 @RestController
+@RequestMapping(value = "/v1")
 public class Gateway {
 
     @Autowired
@@ -33,6 +39,14 @@ public class Gateway {
     private PaymentController paymentController;
 
 
+    @Timer
+    @ApiOperation(value = "Commit payment transaction", response = PaymentResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully committed payment transaction"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PostMapping(path = "/pay")
     public ResponseEntity<PaymentResponse> pay(@RequestBody PaymentRequest paymentRequest) throws Exception {
         final List<String> itemIds = new ArrayList<>();

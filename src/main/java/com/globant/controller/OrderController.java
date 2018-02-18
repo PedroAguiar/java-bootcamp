@@ -6,6 +6,9 @@ import com.globant.model.Order;
 import com.globant.service.OrderService;
 import com.globant.util.DTOUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api
+@Api(value = "payment-service", tags = {"OrderController"})
 @Slf4j
 @RequestMapping(value = "/order")
 @RestController
@@ -26,6 +29,13 @@ public class OrderController {
     private OrderService orderService;
 
     @Timer
+    @ApiOperation(value = "Create an order", response = OrderDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully created order"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PutMapping(path = "/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> createOrder(@PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
 
@@ -44,6 +54,13 @@ public class OrderController {
     }
 
     @Timer
+    @ApiOperation(value = "Retrieve an order", response = OrderDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved order"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @GetMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
         if (log.isDebugEnabled())
@@ -57,6 +74,13 @@ public class OrderController {
     }
 
     @Timer
+    @ApiOperation(value = "Update an order", response = OrderDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated order"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PostMapping(path = "/{orderId}/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateOrder(@PathVariable(name = "orderId") String orderId,
                                   @PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
@@ -75,6 +99,13 @@ public class OrderController {
     }
 
     @Timer
+    @ApiOperation(value = "Delete an order", response = OrderDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully deleted order"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @DeleteMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
         if (log.isDebugEnabled())

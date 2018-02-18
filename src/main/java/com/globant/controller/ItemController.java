@@ -6,6 +6,9 @@ import com.globant.model.Item;
 import com.globant.service.ItemService;
 import com.globant.util.DTOUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api
+@Api(value = "payment-service", tags = {"ItemController"})
 @Slf4j
 @RequestMapping(value = "/item")
 @RestController
@@ -25,6 +28,13 @@ public class ItemController {
     private ItemService itemService;
 
     @Timer
+    @ApiOperation(value = "Create an item", response = ItemDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully created item"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PutMapping(path = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemDTO> createItem(@PathVariable(name = "name") String name) throws Exception {
         if (log.isDebugEnabled())
@@ -42,6 +52,13 @@ public class ItemController {
     }
 
     @Timer
+    @ApiOperation(value = "Retrieve an item", response = ItemDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved item"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemDTO> getItem(@PathVariable(name = "itemId") String itemId) throws Exception {
         if (log.isDebugEnabled())
@@ -55,6 +72,13 @@ public class ItemController {
     }
 
     @Timer
+    @ApiOperation(value = "Update an item", response = HttpStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated item"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @PostMapping(path = "/{itemId}/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateItem(@PathVariable(name = "itemId") String itemId,
                                  @PathVariable(name = "name") String name) throws Exception {
@@ -74,6 +98,13 @@ public class ItemController {
     }
 
     @Timer
+    @ApiOperation(value = "Delete an item", response = HttpStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated item"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
     @DeleteMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteItem(@PathVariable(name = "itemId") String itemId) throws Exception {
         if (log.isDebugEnabled())
