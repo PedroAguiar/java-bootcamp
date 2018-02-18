@@ -1,5 +1,6 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Timer;
 import com.globant.dto.PaymentDTO;
 import com.globant.model.Payment;
 import com.globant.service.OrderService;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Api
@@ -32,6 +32,7 @@ public class PaymentController {
     private OrderService orderService;
 
 
+    @Timer
     @PutMapping(path = "/{clientId}/{orderId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO> createPayment(@PathVariable(name = "clientId") String clientId,
                                                     @PathVariable(name = "orderId") String orderId,
@@ -50,7 +51,7 @@ public class PaymentController {
         return new ResponseEntity<>(DTOUtils.toPaymentDTO(payment), HttpStatus.CREATED);
     }
 
-
+    @Timer
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO> getPayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
         if (log.isDebugEnabled())
@@ -63,7 +64,7 @@ public class PaymentController {
         return new ResponseEntity<>(DTOUtils.toPaymentDTO(payment), HttpStatus.OK);
     }
 
-
+    @Timer
     @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus getPayments(@PathVariable(name = "clientId") String clientId) throws Exception {
         if (log.isDebugEnabled())
@@ -83,7 +84,7 @@ public class PaymentController {
 
     }
 
-
+    @Timer
     @PostMapping(path = "/{paymentId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updatePayment(@PathVariable(name = "paymentId") String paymentId,
                                     @PathVariable(name = "amount") String amount) throws Exception {
@@ -102,7 +103,7 @@ public class PaymentController {
         return HttpStatus.ACCEPTED;
     }
 
-
+    @Timer
     @DeleteMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deletePayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
         if (log.isDebugEnabled())

@@ -9,6 +9,7 @@ import com.globant.model.Item;
 import com.globant.model.Order;
 import com.globant.model.Payment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,15 @@ public class DTOUtils {
     }
 
     public static ClientDTO toClientDTO(Client client) {
-        final List<String> paymentIds = client.getPayments().stream()
-                .map(Payment::getId)
-                .map(String::valueOf)
-                .map(EncryptingUtil::encryptString)
-                .collect(Collectors.toList());
+        List<String> paymentIds = new ArrayList<>();
+        if (client.getPayments() != null) {
+             paymentIds = client.getPayments().stream()
+                    .map(Payment::getId)
+                    .map(String::valueOf)
+                    .map(EncryptingUtil::encryptString)
+                    .collect(Collectors.toList());
+        }
+
 
         return ClientDTO.builder()
                 .clientId(EncryptingUtil.encryptString(String.valueOf(client.getId())))

@@ -4,13 +4,11 @@ spring:
     cache: false
   datasource:
     url: jdbc:h2:file:~/test
-    username: sa
-    password:
     driver-class-name: org.h2.Driver
 # Datasource
   h2:
     console:
-      enabled: true
+      enabled: false
       path: /h2
   jpa:
     hibernate:

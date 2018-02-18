@@ -1,5 +1,6 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Timer;
 import com.globant.dto.ItemDTO;
 import com.globant.model.Item;
 import com.globant.service.ItemService;
@@ -23,6 +24,7 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
+    @Timer
     @PutMapping(path = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemDTO> createItem(@PathVariable(name = "name") String name) throws Exception {
         if (log.isDebugEnabled())
@@ -39,7 +41,7 @@ public class ItemController {
         return new ResponseEntity<>(DTOUtils.toItemDTO(item), HttpStatus.CREATED);
     }
 
-
+    @Timer
     @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemDTO> getItem(@PathVariable(name = "itemId") String itemId) throws Exception {
         if (log.isDebugEnabled())
@@ -52,7 +54,7 @@ public class ItemController {
         return new ResponseEntity<>(DTOUtils.toItemDTO(item), HttpStatus.OK);
     }
 
-
+    @Timer
     @PostMapping(path = "/{itemId}/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateItem(@PathVariable(name = "itemId") String itemId,
                                  @PathVariable(name = "name") String name) throws Exception {
@@ -71,7 +73,7 @@ public class ItemController {
         return HttpStatus.ACCEPTED;
     }
 
-
+    @Timer
     @DeleteMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteItem(@PathVariable(name = "itemId") String itemId) throws Exception {
         if (log.isDebugEnabled())

@@ -6,7 +6,6 @@ import com.globant.model.Payment;
 import com.globant.repository.OrderRepository;
 import com.globant.repository.PaymentRepository;
 import com.globant.service.ClientService;
-import com.globant.service.OrderService;
 import com.globant.service.PaymentService;
 import com.globant.util.EncryptingUtil;
 import lombok.extern.slf4j.Slf4j;

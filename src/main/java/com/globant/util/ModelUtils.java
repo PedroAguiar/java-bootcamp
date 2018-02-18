@@ -19,8 +19,12 @@ public class ModelUtils {
 
     public static Item toItem(ItemDTO itemDTO) {
         return Item.builder()
-                .id(EncryptingUtil.decryptId(itemDTO.getId()))
                 .name(itemDTO.getName())
+                .build();
+    }
+
+    public static Order toOrder(OrderDTO orderDTO) {
+        return Order.builder()
                 .build();
     }
 }

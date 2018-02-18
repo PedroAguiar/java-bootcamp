@@ -9,19 +9,19 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Table(name = "order")
 @Entity
 @Builder
-@AllArgsConstructor
+@Table(name = "PEDIDO")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(foreignKey = @ForeignKey(name = "order_item"), name = "ITEM_ID", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(foreignKey = @ForeignKey(name = "pedido_item"), name = "ITEM_ID")
     private List<Item> items;
 
 }

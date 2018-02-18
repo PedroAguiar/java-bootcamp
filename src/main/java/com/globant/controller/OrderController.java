@@ -1,5 +1,6 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Timer;
 import com.globant.dto.OrderDTO;
 import com.globant.model.Order;
 import com.globant.service.OrderService;
@@ -24,6 +25,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Timer
     @PutMapping(path = "/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> createOrder(@PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
 
@@ -41,7 +43,7 @@ public class OrderController {
         return new ResponseEntity<>(DTOUtils.toOrderDTO(order), HttpStatus.CREATED);
     }
 
-
+    @Timer
     @GetMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
         if (log.isDebugEnabled())
@@ -54,7 +56,7 @@ public class OrderController {
         return new ResponseEntity<>(DTOUtils.toOrderDTO(order), HttpStatus.OK);
     }
 
-
+    @Timer
     @PostMapping(path = "/{orderId}/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateOrder(@PathVariable(name = "orderId") String orderId,
                                   @PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
@@ -72,7 +74,7 @@ public class OrderController {
         return HttpStatus.ACCEPTED;
     }
 
-
+    @Timer
     @DeleteMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
         if (log.isDebugEnabled())

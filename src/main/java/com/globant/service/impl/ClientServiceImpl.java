@@ -28,12 +28,10 @@ public class ClientServiceImpl implements ClientService {
     public Client createClient(ClientDTO clientDTO) throws Exception {
         Validate.notNull(clientDTO);
         Client client = clientRepository.findByNameAndLastName(clientDTO.getName(), clientDTO.getLastName());
-        Validate.isTrue(client != null);
-        final List<Payment> payments = clientDTO.getPaymentIds().stream()
-                .map(paymentId -> paymentRepository.getOne(EncryptingUtil.decryptId(paymentId)))
-                .collect(Collectors.toList());
-        client.setPayments(payments);
-        return clientRepository.save(client);
+        //TODO: Validation
+
+
+        return clientRepository.save(ModelUtils.toClient.apply(clientDTO));
     }
 
 

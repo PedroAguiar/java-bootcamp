@@ -1,5 +1,6 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Timer;
 import com.globant.dto.ClientDTO;
 import com.globant.model.Client;
 import com.globant.service.ClientService;
@@ -30,8 +31,8 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-
-    @PutMapping(path = "/{clientId}/{orderId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timer
+    @PutMapping(path = "/{name}/{lastName}/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClientDTO> createClient(@PathVariable(name = "name") String name,
                                                   @PathVariable(name = "lastName") String lastName,
                                                   @PathVariable(name = "description") String description) throws Exception {
@@ -49,7 +50,7 @@ public class ClientController {
         return new ResponseEntity<>(DTOUtils.toClientDTO(client), HttpStatus.CREATED);
     }
 
-
+    @Timer
     @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClientDTO> getClient(@PathVariable(name = "clientId") String clientId) throws Exception {
         if (log.isDebugEnabled())
@@ -62,7 +63,7 @@ public class ClientController {
         return new ResponseEntity<>(DTOUtils.toClientDTO(client), HttpStatus.OK);
     }
 
-
+    @Timer
     @PostMapping(path = "/{clientId}/{name}/{lastName}}/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateClient(@PathVariable(name = "clientId") String clientId,
                                    @PathVariable(name = "name") String name,
@@ -84,7 +85,7 @@ public class ClientController {
         return HttpStatus.ACCEPTED;
     }
 
-
+    @Timer
     @DeleteMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteClient(@PathVariable(name = "clientId") String clientId) throws Exception {
         if (log.isDebugEnabled())

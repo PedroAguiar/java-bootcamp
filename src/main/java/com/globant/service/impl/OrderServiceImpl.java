@@ -7,6 +7,7 @@ import com.globant.repository.ItemRepository;
 import com.globant.repository.OrderRepository;
 import com.globant.service.OrderService;
 import com.globant.util.EncryptingUtil;
+import com.globant.util.ModelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +33,17 @@ public class OrderServiceImpl implements OrderService {
         if(log.isDebugEnabled())
             log.debug("Creating order with items {} ", orderDTO.getItemIds());
 
-        final Order order = new Order();
+        Order order = ModelUtils.toOrder(orderDTO);
 
         final List<Item> items = orderDTO.getItemIds().stream()
                 .map(itemId -> itemRepository.getOne(EncryptingUtil.decryptId(itemId)))
                 .collect(Collectors.toList());
+
         order.setItems(items);
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Created order {} ", order.getId());
+        }
 
         return orderRepository.save(order);
     }
