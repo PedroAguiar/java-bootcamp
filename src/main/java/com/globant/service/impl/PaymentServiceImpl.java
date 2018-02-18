@@ -19,12 +19,16 @@ import java.util.List;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
+    private final ClientService clientService;
+    private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+
     @Autowired
-    private ClientService clientService;
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private OrderRepository orderRepository;
+    public PaymentServiceImpl(ClientService clientService, PaymentRepository paymentRepository, OrderRepository orderRepository) {
+        this.clientService = clientService;
+        this.paymentRepository = paymentRepository;
+        this.orderRepository = orderRepository;
+    }
 
     @Override
     public Payment createPayment(PaymentDTO paymentDTO) throws Exception {

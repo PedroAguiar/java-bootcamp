@@ -9,7 +9,7 @@ import com.globant.model.Order;
 
 import java.util.function.Function;
 
-public class ModelUtils {
+public final class ModelUtils {
 
     public static Function<ClientDTO, Client> toClient = clientDTO -> Client.builder()
             .name(clientDTO.getName())

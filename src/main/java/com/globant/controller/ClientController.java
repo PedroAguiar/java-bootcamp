@@ -1,11 +1,10 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Log;
 import com.globant.aspect.annotation.Timer;
 import com.globant.dto.ClientDTO;
 import com.globant.model.Client;
 import com.globant.service.ClientService;
-import com.globant.service.OrderService;
-import com.globant.service.PaymentService;
 import com.globant.util.DTOUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,16 +24,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/client")
 public class ClientController {
 
-    @Autowired
-    private PaymentService paymentService;
+    private final ClientService clientService;
 
     @Autowired
-    private OrderService orderService;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
-    @Autowired
-    private ClientService clientService;
-
-    @Timer
+    @Log
     @ApiOperation(value = "Create a client", response = ClientDTO.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully created client"),
@@ -46,16 +43,10 @@ public class ClientController {
     public ResponseEntity<ClientDTO> createClient(@PathVariable(name = "name") String name,
                                                   @PathVariable(name = "lastName") String lastName,
                                                   @PathVariable(name = "description") String description) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received CREATE client request for client " + name + " " + lastName);
 
         Validate.notBlank(name, lastName, description);
         final Client client = clientService.createClient(DTOUtils.toClientDTO("", name, lastName, description));
-
         log.info("Created client {}", client.getId());
-
-        if (log.isDebugEnabled())
-            log.debug("Returning client {}", client.toString());
 
         return new ResponseEntity<>(DTOUtils.toClientDTO(client), HttpStatus.CREATED);
     }
@@ -70,11 +61,8 @@ public class ClientController {
     )
     @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClientDTO> getClient(@PathVariable(name = "clientId") String clientId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received GET client request for client {}", clientId);
 
         final Client client = clientService.getClient(clientId);
-
         log.info("Returning client {} ", clientId);
 
         return new ResponseEntity<>(DTOUtils.toClientDTO(client), HttpStatus.OK);
@@ -93,18 +81,10 @@ public class ClientController {
                                    @PathVariable(name = "name") String name,
                                    @PathVariable(name = "lastName") String lastName,
                                    @PathVariable(name = "description") String description) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received UPDATE client request for client {}", clientId);
 
         validate(clientId);
-
-        Client client = clientService.updateClient(DTOUtils.toClientDTO(clientId, name, lastName, description));
-
-
+        clientService.updateClient(DTOUtils.toClientDTO(clientId, name, lastName, description));
         log.info("Updated client {}", clientId);
-
-        if (log.isDebugEnabled())
-            log.debug("Updated client {} data to: ", client.toString());
 
         return HttpStatus.ACCEPTED;
     }
@@ -119,15 +99,10 @@ public class ClientController {
     )
     @DeleteMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteClient(@PathVariable(name = "clientId") String clientId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received DELETE client request for client {}", clientId);
 
         Client client = clientService.getClient(clientId);
         Validate.isTrue(client != null, "Client " + clientId + " did not exist.");
         clientService.deleteClient(clientId);
-
-        if (log.isDebugEnabled())
-            log.debug("Deleted client {}", clientId);
 
         return HttpStatus.ACCEPTED;
     }

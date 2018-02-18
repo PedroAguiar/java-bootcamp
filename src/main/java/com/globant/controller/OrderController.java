@@ -1,5 +1,6 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Log;
 import com.globant.aspect.annotation.Timer;
 import com.globant.dto.OrderDTO;
 import com.globant.model.Order;
@@ -25,9 +26,14 @@ import java.util.List;
 @RestController
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
+    @Autowired
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @Log
     @Timer
     @ApiOperation(value = "Create an order", response = OrderDTO.class)
     @ApiResponses(value = {
@@ -39,20 +45,14 @@ public class OrderController {
     @PutMapping(path = "/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> createOrder(@PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
 
-        if (log.isDebugEnabled())
-            log.debug("Received CREATE order request with items {}" , itemIds);
-
         Validate.notEmpty(itemIds);
         final Order order = orderService.createOrder(DTOUtils.toOrderDTO("", itemIds));
-
         log.info("Created order {}", order.getId());
-
-        if (log.isDebugEnabled())
-            log.debug("Returning order {}", order.toString());
 
         return new ResponseEntity<>(DTOUtils.toOrderDTO(order), HttpStatus.CREATED);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Retrieve an order", response = OrderDTO.class)
     @ApiResponses(value = {
@@ -63,16 +63,14 @@ public class OrderController {
     )
     @GetMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received GET order request for order {}", orderId);
 
         final Order order = orderService.getOrder(orderId);
-
         log.info("Returning order {} ", orderId);
 
         return new ResponseEntity<>(DTOUtils.toOrderDTO(order), HttpStatus.OK);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Update an order", response = OrderDTO.class)
     @ApiResponses(value = {
@@ -84,20 +82,15 @@ public class OrderController {
     @PostMapping(path = "/{orderId}/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateOrder(@PathVariable(name = "orderId") String orderId,
                                   @PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received UPDATE order request for order {}", orderId);
 
         validate(orderId);
-        Order item = orderService.updateOrder(DTOUtils.toOrderDTO(orderId, itemIds));
-
+        orderService.updateOrder(DTOUtils.toOrderDTO(orderId, itemIds));
         log.info("Updated order {}", orderId);
-
-        if (log.isDebugEnabled())
-            log.debug("Updated order {} data to: ", item.toString());
 
         return HttpStatus.ACCEPTED;
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Delete an order", response = OrderDTO.class)
     @ApiResponses(value = {
@@ -108,12 +101,9 @@ public class OrderController {
     )
     @DeleteMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received DELETE item request for item {}", orderId);
 
         validate(orderId);
         orderService.deleteOrder(orderId);
-
         log.info("Deleted order {}", orderId);
 
         return HttpStatus.ACCEPTED;

@@ -21,11 +21,14 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final ItemRepository itemRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
+    private OrderServiceImpl(OrderRepository orderRepository, ItemRepository itemRepository) {
+        this.orderRepository = orderRepository;
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public Order createOrder(OrderDTO orderDTO) throws Exception {

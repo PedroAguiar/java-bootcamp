@@ -23,9 +23,12 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableConfigurationProperties(value = SwaggerProperties.class)
 public class SwaggerConfiguration {
 
+    private final SwaggerProperties swaggerProperties;
 
     @Autowired
-    private SwaggerProperties swaggerProperties;
+    public SwaggerConfiguration(SwaggerProperties swaggerProperties) {
+        this.swaggerProperties = swaggerProperties;
+    }
 
 
     @Bean

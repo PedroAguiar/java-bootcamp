@@ -12,8 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemServiceImpl implements ItemService {
 
+    private final ItemRepository itemRepository;
+
     @Autowired
-    private ItemRepository itemRepository;
+    public ItemServiceImpl(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public Item createItem(ItemDTO itemDTO) throws Exception {

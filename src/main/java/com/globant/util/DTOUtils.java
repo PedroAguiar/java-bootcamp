@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DTOUtils {
+public final class DTOUtils {
 
     public static ClientDTO toClientDTO (String clientId, String name, String lastName, String description) {
         return ClientDTO.builder()

@@ -13,25 +13,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+    private final PaymentRepository paymentRepository;
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    public ClientServiceImpl(ClientRepository clientRepository, PaymentRepository paymentRepository) {
+        this.clientRepository = clientRepository;
+        this.paymentRepository = paymentRepository;
+    }
 
     @Override
     public Client createClient(ClientDTO clientDTO) throws Exception {
         Validate.notNull(clientDTO);
         return clientRepository.save(ModelUtils.toClient.apply(clientDTO));
     }
-
 
     @Override
     public Client getClient(String clientId) throws Exception {

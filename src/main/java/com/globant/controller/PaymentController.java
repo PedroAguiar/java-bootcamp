@@ -1,12 +1,11 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Log;
 import com.globant.aspect.annotation.Timer;
 import com.globant.dto.PaymentDTO;
 import com.globant.model.Payment;
-import com.globant.service.OrderService;
 import com.globant.service.PaymentService;
 import com.globant.util.DTOUtils;
-import com.globant.util.EncryptingUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Api(value = "payment-service", tags = {"PaymentController"})
 @Slf4j
@@ -28,13 +26,15 @@ import java.util.stream.Collectors;
 @RestController
 public class PaymentController {
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
     @Autowired
-    private OrderService orderService;
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
 
+    @Log
     @Timer
     @ApiOperation(value = "Create a payment", response = PaymentDTO.class)
     @ApiResponses(value = {
@@ -47,20 +47,15 @@ public class PaymentController {
     public ResponseEntity<PaymentDTO> createPayment(@PathVariable(name = "clientId") String clientId,
                                                     @PathVariable(name = "orderId") String orderId,
                                                     @PathVariable(name = "amount") String amount) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received CREATE payment request for client {} and order {}", clientId, orderId);
 
         Validate.notBlank(clientId, orderId, amount);
         final Payment payment = paymentService.createPayment(DTOUtils.toPaymentDTO("", orderId, amount));
-
         log.info("Created payment {} for client {}", payment.getId(), clientId);
-
-        if (log.isDebugEnabled())
-            log.debug("Returning payment {} for client {}", payment.getId(), clientId);
 
         return new ResponseEntity<>(DTOUtils.toPaymentDTO(payment), HttpStatus.CREATED);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Retrieve a payment", response = PaymentDTO.class)
     @ApiResponses(value = {
@@ -71,16 +66,14 @@ public class PaymentController {
     )
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO> getPayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received GET payment request for payment {}", paymentId);
 
         final Payment payment = paymentService.getPayment(paymentId);
-
         log.info("Returning payment {} ", paymentId);
 
         return new ResponseEntity<>(DTOUtils.toPaymentDTO(payment), HttpStatus.OK);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Retrieve multiple payments", response = PaymentDTO.class)
     @ApiResponses(value = {
@@ -90,24 +83,14 @@ public class PaymentController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
     @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus getPayments(@PathVariable(name = "clientId") String clientId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received GET payments request for client {}", clientId);
+    public ResponseEntity<List<Payment>> getPayments(@PathVariable(name = "clientId") String clientId) throws Exception {
 
         final List<Payment> payments = paymentService.getPayments(clientId);
-        final List<String> paymentIds = payments.stream()
-                .map(Payment::getId)
-                .map(String::valueOf)
-                .map(EncryptingUtil::encryptString)
-                .collect(Collectors.toList());
 
-        if (log.isDebugEnabled())
-            log.debug("Returning payments {} for client {}", paymentIds.toArray(), clientId);
-
-        return HttpStatus.ACCEPTED;
-
+        return new ResponseEntity<>(payments, HttpStatus.OK);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Update payment", response = HttpStatus.class)
     @ApiResponses(value = {
@@ -119,21 +102,15 @@ public class PaymentController {
     @PostMapping(path = "/{paymentId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updatePayment(@PathVariable(name = "paymentId") String paymentId,
                                     @PathVariable(name = "amount") String amount) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received UPDATE payment request for payment {}", paymentId);
 
         validate(paymentId);
-
-        final Payment payment = paymentService.updatePayment(paymentId, amount);
-
+        paymentService.updatePayment(paymentId, amount);
         log.info("Updated payment {}", paymentId);
-
-        if (log.isDebugEnabled())
-            log.debug("Updated payment {} data to: ", payment.toString());
 
         return HttpStatus.ACCEPTED;
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Update payment", response = HttpStatus.class)
     @ApiResponses(value = {
@@ -144,13 +121,8 @@ public class PaymentController {
     )
     @DeleteMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deletePayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received DELETE payment request for payment {}", paymentId);
 
         paymentService.deletePayment(paymentId);
-
-        if (log.isDebugEnabled())
-            log.debug("Deleted payment {} {}", paymentId);
 
         return HttpStatus.ACCEPTED;
     }

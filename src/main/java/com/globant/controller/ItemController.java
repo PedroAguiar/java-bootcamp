@@ -1,5 +1,6 @@
 package com.globant.controller;
 
+import com.globant.aspect.annotation.Log;
 import com.globant.aspect.annotation.Timer;
 import com.globant.dto.ItemDTO;
 import com.globant.model.Item;
@@ -23,10 +24,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ItemController {
 
+    private final ItemService itemService;
 
     @Autowired
-    private ItemService itemService;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
 
+    @Log
     @Timer
     @ApiOperation(value = "Create an item", response = ItemDTO.class)
     @ApiResponses(value = {
@@ -37,20 +42,15 @@ public class ItemController {
     )
     @PutMapping(path = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemDTO> createItem(@PathVariable(name = "name") String name) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received CREATE item request for item with name {}" , name);
 
         Validate.notBlank(name);
         final Item item = itemService.createItem(DTOUtils.toItemDTO("", name));
-
         log.info("Created item {}", item.getId());
-
-        if (log.isDebugEnabled())
-            log.debug("Returning item {}", item.toString());
 
         return new ResponseEntity<>(DTOUtils.toItemDTO(item), HttpStatus.CREATED);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Retrieve an item", response = ItemDTO.class)
     @ApiResponses(value = {
@@ -61,16 +61,14 @@ public class ItemController {
     )
     @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemDTO> getItem(@PathVariable(name = "itemId") String itemId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received GET item request for item {}", itemId);
 
         final Item item = itemService.getItem(itemId);
-
         log.info("Returning itemId {} ", itemId);
 
         return new ResponseEntity<>(DTOUtils.toItemDTO(item), HttpStatus.OK);
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Update an item", response = HttpStatus.class)
     @ApiResponses(value = {
@@ -82,21 +80,14 @@ public class ItemController {
     @PostMapping(path = "/{itemId}/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus updateItem(@PathVariable(name = "itemId") String itemId,
                                  @PathVariable(name = "name") String name) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received UPDATE item request for item {}", itemId);
 
         validate(itemId);
-
-        Item item = itemService.updateItem(DTOUtils.toItemDTO(itemId, name));
-
-        log.info("Updated item {}", itemId);
-
-        if (log.isDebugEnabled())
-            log.debug("Updated item {} data to: ", item.toString());
+        itemService.updateItem(DTOUtils.toItemDTO(itemId, name));
 
         return HttpStatus.ACCEPTED;
     }
 
+    @Log
     @Timer
     @ApiOperation(value = "Delete an item", response = HttpStatus.class)
     @ApiResponses(value = {
@@ -107,12 +98,9 @@ public class ItemController {
     )
     @DeleteMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deleteItem(@PathVariable(name = "itemId") String itemId) throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Received DELETE item request for item {}", itemId);
 
         validate(itemId);
         itemService.deleteItem(itemId);
-
         log.info("Deleted item {}", itemId);
 
         return HttpStatus.ACCEPTED;

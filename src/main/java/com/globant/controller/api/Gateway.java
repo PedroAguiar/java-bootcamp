@@ -1,5 +1,6 @@
 package com.globant.controller.api;
 
+import com.globant.aspect.annotation.Log;
 import com.globant.aspect.annotation.Timer;
 import com.globant.controller.ClientController;
 import com.globant.controller.ItemController;
@@ -26,19 +27,21 @@ import java.util.List;
 @RequestMapping(value = "/v1")
 public class Gateway {
 
-    @Autowired
-    private ItemController itemController;
+    private final ItemController itemController;
+    private final OrderController orderController;
+    private final ClientController clientController;
+    private final PaymentController paymentController;
 
     @Autowired
-    private OrderController orderController;
+    public Gateway(ItemController itemController, OrderController orderController, ClientController clientController, PaymentController paymentController) {
+        this.itemController = itemController;
+        this.orderController = orderController;
+        this.clientController = clientController;
+        this.paymentController = paymentController;
+    }
 
-    @Autowired
-    private ClientController clientController;
 
-    @Autowired
-    private PaymentController paymentController;
-
-
+    @Log
     @Timer
     @ApiOperation(value = "Commit payment transaction", response = PaymentResponse.class)
     @ApiResponses(value = {
@@ -50,9 +53,7 @@ public class Gateway {
     @PostMapping(path = "/pay")
     public ResponseEntity<PaymentResponse> pay(@RequestBody PaymentRequest paymentRequest) throws Exception {
         final List<String> itemIds = new ArrayList<>();
-
         ResponseEntity<ClientDTO> clientDTO = clientController.createClient(paymentRequest.getClientName(), paymentRequest.getClientLastName(), paymentRequest.getClientDescription());
-
         ClientDTO clientDTO1 = clientDTO.getBody();
 
         for (int i = 0; i < paymentRequest.getItemNames().size(); i++) {
@@ -60,7 +61,6 @@ public class Gateway {
         }
 
         String orderId = orderController.createOrder(itemIds).getBody().getOrderId();
-
         String paymentId = paymentController.createPayment(clientDTO1.getClientId(), orderId, paymentRequest.getPaymentAmount()).getBody().getId();
 
         return new ResponseEntity<>(new PaymentResponse(paymentId), HttpStatus.CREATED);
