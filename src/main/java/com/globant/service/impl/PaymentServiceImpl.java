@@ -56,13 +56,11 @@ public class PaymentServiceImpl implements PaymentService {
         Validate.notBlank(paymentId, amount);
         if (log.isDebugEnabled())
             log.debug("Trying to update payment {} amount to {} ", paymentId, amount);
-        paymentRepository.getOne(Long.valueOf(paymentId));
         return paymentRepository.updatePaymentAmount(Long.valueOf(paymentId), Long.valueOf(amount));
     }
 
     @Override
     public void deletePayment(String paymentId) throws Exception {
-
         if (log.isDebugEnabled())
             log.debug("Trying to delete payment {} ", paymentId);
 

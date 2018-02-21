@@ -43,10 +43,10 @@ public class PaymentController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PutMapping(path = "/{clientId}/{orderId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaymentDTO> createPayment(@PathVariable(name = "clientId") String clientId,
-                                                    @PathVariable(name = "orderId") String orderId,
-                                                    @PathVariable(name = "amount") String amount) throws Exception {
+    @PutMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PaymentDTO> createPayment(@RequestParam(name = "clientId") String clientId,
+                                                    @RequestParam(name = "orderId") String orderId,
+                                                    @RequestParam(name = "amount") String amount) throws Exception {
 
         Validate.notBlank(clientId, orderId, amount);
         final Payment payment = paymentService.createPayment(DTOUtils.toPaymentDTO("", orderId, amount));
@@ -64,8 +64,8 @@ public class PaymentController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaymentDTO> getPayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
+    @GetMapping(value = "/retrieve", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PaymentDTO> getPayment(@RequestParam(name = "paymentId") String paymentId) throws Exception {
 
         final Payment payment = paymentService.getPayment(paymentId);
         log.info("Returning payment {} ", paymentId);
@@ -82,8 +82,8 @@ public class PaymentController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Payment>> getPayments(@PathVariable(name = "clientId") String clientId) throws Exception {
+    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Payment>> getPayments(@RequestParam(name = "clientId") String clientId) throws Exception {
 
         final List<Payment> payments = paymentService.getPayments(clientId);
 
@@ -99,9 +99,9 @@ public class PaymentController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PostMapping(path = "/{paymentId}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus updatePayment(@PathVariable(name = "paymentId") String paymentId,
-                                    @PathVariable(name = "amount") String amount) throws Exception {
+    @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus updatePayment(@RequestParam(name = "paymentId") String paymentId,
+                                    @RequestParam(name = "amount") String amount) throws Exception {
 
         validate(paymentId);
         paymentService.updatePayment(paymentId, amount);
@@ -119,8 +119,8 @@ public class PaymentController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @DeleteMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus deletePayment(@PathVariable(name = "paymentId") String paymentId) throws Exception {
+    @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus deletePayment(@RequestParam(name = "paymentId") String paymentId) throws Exception {
 
         paymentService.deletePayment(paymentId);
 

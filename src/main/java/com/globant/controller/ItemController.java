@@ -40,8 +40,8 @@ public class ItemController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PutMapping(path = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ItemDTO> createItem(@PathVariable(name = "name") String name) throws Exception {
+    @PutMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ItemDTO> createItem(@RequestParam(name = "name") String name) throws Exception {
 
         Validate.notBlank(name);
         final Item item = itemService.createItem(DTOUtils.toItemDTO("", name));
@@ -59,8 +59,8 @@ public class ItemController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ItemDTO> getItem(@PathVariable(name = "itemId") String itemId) throws Exception {
+    @GetMapping(path = "/retrieve", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ItemDTO> getItem(@RequestParam(name = "itemId") String itemId) throws Exception {
 
         final Item item = itemService.getItem(itemId);
         log.info("Returning itemId {} ", itemId);
@@ -77,9 +77,9 @@ public class ItemController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PostMapping(path = "/{itemId}/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus updateItem(@PathVariable(name = "itemId") String itemId,
-                                 @PathVariable(name = "name") String name) throws Exception {
+    @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus updateItem(@RequestParam(name = "itemId") String itemId,
+                                 @RequestParam(name = "name") String name) throws Exception {
 
         validate(itemId);
         itemService.updateItem(DTOUtils.toItemDTO(itemId, name));
@@ -96,8 +96,8 @@ public class ItemController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @DeleteMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus deleteItem(@PathVariable(name = "itemId") String itemId) throws Exception {
+    @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus deleteItem(@RequestParam(name = "itemId") String itemId) throws Exception {
 
         validate(itemId);
         itemService.deleteItem(itemId);

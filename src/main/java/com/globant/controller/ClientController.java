@@ -39,10 +39,10 @@ public class ClientController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PutMapping(path = "/{name}/{lastName}/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ClientDTO> createClient(@PathVariable(name = "name") String name,
-                                                  @PathVariable(name = "lastName") String lastName,
-                                                  @PathVariable(name = "description") String description) throws Exception {
+    @PutMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ClientDTO> createClient(@RequestParam(name = "name") String name,
+                                                  @RequestParam(name = "lastName") String lastName,
+                                                  @RequestParam(name = "description") String description) throws Exception {
 
         Validate.notBlank(name, lastName, description);
         final Client client = clientService.createClient(DTOUtils.toClientDTO("", name, lastName, description));
@@ -59,8 +59,8 @@ public class ClientController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @GetMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ClientDTO> getClient(@PathVariable(name = "clientId") String clientId) throws Exception {
+    @GetMapping(path = "/retrieve", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ClientDTO> getClient(@RequestParam(name = "clientId") String clientId) throws Exception {
 
         final Client client = clientService.getClient(clientId);
         log.info("Returning client {} ", clientId);
@@ -76,11 +76,11 @@ public class ClientController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PostMapping(path = "/{clientId}/{name}/{lastName}}/{description}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus updateClient(@PathVariable(name = "clientId") String clientId,
-                                   @PathVariable(name = "name") String name,
-                                   @PathVariable(name = "lastName") String lastName,
-                                   @PathVariable(name = "description") String description) throws Exception {
+    @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus updateClient(@RequestParam(name = "clientId") String clientId,
+                                   @RequestParam(name = "name") String name,
+                                   @RequestParam(name = "lastName") String lastName,
+                                   @RequestParam(name = "description") String description) throws Exception {
 
         validate(clientId);
         clientService.updateClient(DTOUtils.toClientDTO(clientId, name, lastName, description));
@@ -97,8 +97,8 @@ public class ClientController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @DeleteMapping(path = "/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus deleteClient(@PathVariable(name = "clientId") String clientId) throws Exception {
+    @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus deleteClient(@RequestParam(name = "clientId") String clientId) throws Exception {
 
         Client client = clientService.getClient(clientId);
         Validate.isTrue(client != null, "Client " + clientId + " did not exist.");

@@ -67,15 +67,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order updateOrder(OrderDTO orderDTO) throws Exception {
         Validate.notNull(orderDTO);
-        Order order =  orderRepository.getOne(EncryptingUtil.decryptId(orderDTO.getOrderId()));
-        List<Long> itemIds = EncryptingUtil.decryptStrings(orderDTO.getItemIds()).collect(Collectors.toList());
-
+        Order order = getOrder(orderDTO.getOrderId());
+        List<Long> itemIds = EncryptingUtil.decryptStrings(orderDTO.getItemIds())
+                .collect(Collectors.toList());
         List<Item> items = itemRepository.findAll(itemIds).stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-
         order.setItems(items);
-
         return order;
     }
 

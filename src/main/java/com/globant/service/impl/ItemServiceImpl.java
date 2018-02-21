@@ -32,7 +32,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(ItemDTO itemDTO) throws Exception {
-        final Item item = ModelUtils.toItem(itemDTO);
+        Item item = getItem(itemDTO.getId());
+        item.setName(itemDTO.getName());
         return itemRepository.save(item);
     }
 

@@ -42,8 +42,8 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PutMapping(path = "/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderDTO> createOrder(@PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
+    @PutMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OrderDTO> createOrder(@RequestParam(name = "itemIds") List<String> itemIds) throws Exception {
 
         Validate.notEmpty(itemIds);
         final Order order = orderService.createOrder(DTOUtils.toOrderDTO("", itemIds));
@@ -61,8 +61,8 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @GetMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
+    @GetMapping(path = "/retrieve", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OrderDTO> getOrder(@RequestParam(name = "orderId") String orderId) throws Exception {
 
         final Order order = orderService.getOrder(orderId);
         log.info("Returning order {} ", orderId);
@@ -79,9 +79,9 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @PostMapping(path = "/{orderId}/{itemIds}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus updateOrder(@PathVariable(name = "orderId") String orderId,
-                                  @PathVariable(name = "itemIds") List<String> itemIds) throws Exception {
+    @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus updateOrder(@RequestParam(name = "orderId") String orderId,
+                                  @RequestParam(name = "itemIds") List<String> itemIds) throws Exception {
 
         validate(orderId);
         orderService.updateOrder(DTOUtils.toOrderDTO(orderId, itemIds));
@@ -99,8 +99,8 @@ public class OrderController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @DeleteMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus deleteOrder(@PathVariable(name = "orderId") String orderId) throws Exception {
+    @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpStatus deleteOrder(@RequestParam(name = "orderId") String orderId) throws Exception {
 
         validate(orderId);
         orderService.deleteOrder(orderId);

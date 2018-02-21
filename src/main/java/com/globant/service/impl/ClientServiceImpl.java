@@ -40,12 +40,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(ClientDTO clientDTO) throws Exception {
-        Long clientId = clientRepository.getOne(EncryptingUtil.decryptId(clientDTO.getClientId())).getId();
-        Client client = ModelUtils.toClient.apply(clientDTO);
-        client.setId(clientId);
+        Client client = getClient(clientDTO.getClientId());
         List<Payment> payments = clientDTO.getPaymentIds().stream()
                 .map(paymentId -> paymentRepository.getOne(EncryptingUtil.decryptId(paymentId)))
                 .collect(Collectors.toList());
+        client.setName(clientDTO.getName());
+        client.setLastName(clientDTO.getLastName());
         client.setPayments(payments);
         return clientRepository.save(client);
     }
