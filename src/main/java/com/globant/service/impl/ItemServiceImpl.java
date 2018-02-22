@@ -6,6 +6,7 @@ import com.globant.repository.ItemRepository;
 import com.globant.service.ItemService;
 import com.globant.util.EncryptingUtil;
 import com.globant.util.ModelUtils;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item createItem(ItemDTO itemDTO) throws Exception {
+        Validate.notNull(itemDTO);
         final Item item = ModelUtils.toItem(itemDTO);
         return itemRepository.save(item);
     }
@@ -32,6 +34,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(ItemDTO itemDTO) throws Exception {
+        Validate.notNull(itemDTO);
         Item item = getItem(itemDTO.getId());
         item.setName(itemDTO.getName());
         return itemRepository.save(item);

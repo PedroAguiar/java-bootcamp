@@ -82,7 +82,7 @@ public class PaymentController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
     )
-    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/client/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Payment>> getPayments(@RequestParam(name = "clientId") String clientId) throws Exception {
 
         final List<Payment> payments = paymentService.getPayments(clientId);
@@ -121,11 +121,43 @@ public class PaymentController {
     )
     @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus deletePayment(@RequestParam(name = "paymentId") String paymentId) throws Exception {
-
         paymentService.deletePayment(paymentId);
-
         return HttpStatus.ACCEPTED;
     }
+
+
+    @Log
+    @Timer
+    @ApiOperation(value = "Get all payments", response = HttpStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated payment"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
+    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Payment>> getAllPayments() throws Exception {
+        List<Payment> payments = paymentService.getPayments();
+        return new ResponseEntity<>(payments, HttpStatus.OK);
+    }
+
+
+    @Log
+    @Timer
+    @ApiOperation(value = "Count the amount of existing payments", response = HttpStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Successfully updated payment"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")}
+    )
+    @GetMapping(path = "/count", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> countAllPayments() throws Exception {
+        int payments = paymentService.getPayments().size();
+        return new ResponseEntity<>(payments, HttpStatus.OK);
+    }
+
+
 
     private void validate(String paymentId) throws Exception {
         Validate.notNull(paymentService.getPayment(paymentId));

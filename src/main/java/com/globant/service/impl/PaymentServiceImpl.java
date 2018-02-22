@@ -47,8 +47,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public List<Payment> getPayments() throws Exception {
+        return paymentRepository.findAll();
+    }
+
+    @Override
     public Payment getPayment(String paymentId) throws Exception {
-        return paymentRepository.getOne(Long.valueOf(paymentId));
+        return paymentRepository.getOne(EncryptingUtil.decryptId(paymentId));
     }
 
     @Override
@@ -56,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
         Validate.notBlank(paymentId, amount);
         if (log.isDebugEnabled())
             log.debug("Trying to update payment {} amount to {} ", paymentId, amount);
-        return paymentRepository.updatePaymentAmount(Long.valueOf(paymentId), Long.valueOf(amount));
+        return paymentRepository.updatePaymentAmount(EncryptingUtil.decryptId(paymentId), Long.valueOf(amount));
     }
 
     @Override
@@ -64,6 +69,6 @@ public class PaymentServiceImpl implements PaymentService {
         if (log.isDebugEnabled())
             log.debug("Trying to delete payment {} ", paymentId);
 
-        paymentRepository.delete(Long.valueOf(paymentId));
+        paymentRepository.delete(EncryptingUtil.decryptId(paymentId));
     }
 }

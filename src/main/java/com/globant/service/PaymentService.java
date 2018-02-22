@@ -11,6 +11,8 @@ public interface PaymentService {
 
     List<Payment> getPayments(String clientId) throws Exception;
 
+    List<Payment> getPayments() throws Exception;
+
     Payment getPayment(String paymentId) throws Exception;
 
     Payment updatePayment(String paymentId, String amount) throws Exception;

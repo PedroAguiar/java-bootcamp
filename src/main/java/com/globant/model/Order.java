@@ -1,10 +1,10 @@
 package com.globant.model;
 
-import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,13 +13,13 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "PEDIDO")
-@ApiModel(value = "Order", description = "Order Entity")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

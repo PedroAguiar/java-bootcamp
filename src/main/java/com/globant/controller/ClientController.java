@@ -45,7 +45,7 @@ public class ClientController {
                                                   @RequestParam(name = "description") String description) throws Exception {
 
         Validate.notBlank(name, lastName, description);
-        final Client client = clientService.createClient(DTOUtils.toClientDTO("", name, lastName, description));
+        final Client client = clientService.saveClient(DTOUtils.toClientDTO("", name, lastName, description));
         log.info("Created client {}", client.getId());
 
         return new ResponseEntity<>(DTOUtils.toClientDTO(client), HttpStatus.CREATED);

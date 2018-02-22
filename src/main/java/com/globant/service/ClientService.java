@@ -5,7 +5,7 @@ import com.globant.model.Client;
 
 public interface ClientService {
 
-    Client createClient(ClientDTO clientDTO) throws Exception;
+    Client saveClient(ClientDTO clientDTO) throws Exception;
 
     Client getClient(String clientId) throws Exception;
 

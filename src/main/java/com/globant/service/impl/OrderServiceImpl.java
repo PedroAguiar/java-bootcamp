@@ -13,6 +13,7 @@ import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,7 +33,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(OrderDTO orderDTO) throws Exception {
-
+        Validate.notNull(orderDTO);
+        Validate.notEmpty(orderDTO.getItemIds());
         if(log.isDebugEnabled())
             log.debug("Creating order with items {} ", orderDTO.getItemIds());
 
@@ -41,20 +43,15 @@ public class OrderServiceImpl implements OrderService {
         final List<Item> items = orderDTO.getItemIds().stream()
                 .map(itemId -> itemRepository.getOne(EncryptingUtil.decryptId(itemId)))
                 .collect(Collectors.toList());
-
         order.setItems(items);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Created order {} ", order.getId());
-        }
 
         return orderRepository.save(order);
     }
 
     @Override
     public List<Order> getOrders(List<String> orderIds) {
-        Validate.notNull(orderIds);
-        List<Long> decryptedOrderIds = EncryptingUtil.decryptStrings(orderIds)
+        Validate.notEmpty(orderIds);
+        final List<Long> decryptedOrderIds = EncryptingUtil.decryptStrings(orderIds)
                 .collect(Collectors.toList());
         return orderRepository.findAll(decryptedOrderIds);
     }
@@ -67,14 +64,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order updateOrder(OrderDTO orderDTO) throws Exception {
         Validate.notNull(orderDTO);
-        Order order = getOrder(orderDTO.getOrderId());
-        List<Long> itemIds = EncryptingUtil.decryptStrings(orderDTO.getItemIds())
-                .collect(Collectors.toList());
-        List<Item> items = itemRepository.findAll(itemIds).stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-        order.setItems(items);
-        return order;
+        Validate.notEmpty(orderDTO.getItemIds());
+
+        Order order =  getOrder(orderDTO.getOrderId());
+        List<Long> itemIds = EncryptingUtil.decryptStrings(orderDTO.getItemIds()).collect(Collectors.toList());
+        List<Item> items = itemRepository.findAll(itemIds);
+
+        if (items.isEmpty()) {
+            order.getItems().addAll(items);
+        }
+
+        return orderRepository.save(order);
     }
 
     @Override

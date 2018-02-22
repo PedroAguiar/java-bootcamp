@@ -28,7 +28,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client createClient(ClientDTO clientDTO) throws Exception {
+    public Client saveClient(ClientDTO clientDTO) throws Exception {
         Validate.notNull(clientDTO);
         return clientRepository.save(ModelUtils.toClient.apply(clientDTO));
     }
@@ -40,6 +40,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(ClientDTO clientDTO) throws Exception {
+        Validate.notNull(clientDTO);
+        Validate.notEmpty(clientDTO.getPaymentIds());
         Client client = getClient(clientDTO.getClientId());
         List<Payment> payments = clientDTO.getPaymentIds().stream()
                 .map(paymentId -> paymentRepository.getOne(EncryptingUtil.decryptId(paymentId)))
