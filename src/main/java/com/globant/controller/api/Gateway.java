@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Api(value = "payment-service", tags = {"API Gateway"})
@@ -62,6 +64,8 @@ public class Gateway {
 
         String orderId = orderController.createOrder(itemIds).getBody().getOrderId();
         String paymentId = paymentController.createPayment(clientDTO1.getClientId(), orderId, paymentRequest.getPaymentAmount()).getBody().getId();
+        
+        clientController.updateClient(clientDTO1.getClientId(), clientDTO1.getName(), clientDTO1.getLastName(), clientDTO1.getDescription(), Collections.singletonList(paymentId));
 
         return new ResponseEntity<>(new PaymentResponse(paymentId), HttpStatus.CREATED);
 

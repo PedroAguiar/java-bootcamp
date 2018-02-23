@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 
 public final class DTOUtils {
 
-    public static ClientDTO toClientDTO (String clientId, String name, String lastName, String description) {
+    public static ClientDTO toClientDTO (String clientId, String name, String lastName, String description, List<String> paymentIds) {
         return ClientDTO.builder()
                 .clientId(clientId)
                 .name(name)
                 .lastName(lastName)
                 .description(description)
+                .paymentIds(paymentIds != null && !paymentIds.isEmpty() ? paymentIds : new ArrayList<>())
                 .build();
     }
 

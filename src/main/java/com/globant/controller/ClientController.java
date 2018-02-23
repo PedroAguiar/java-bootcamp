@@ -18,6 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Api(value = "payment-service", tags = {"ClientController"})
 @Slf4j
 @RestController
@@ -45,7 +48,7 @@ public class ClientController {
                                                   @RequestParam(name = "description") String description) throws Exception {
 
         Validate.notBlank(name, lastName, description);
-        final Client client = clientService.saveClient(DTOUtils.toClientDTO("", name, lastName, description));
+        final Client client = clientService.saveClient(DTOUtils.toClientDTO("", name, lastName, description, new ArrayList<>()));
         log.info("Created client {}", client.getId());
 
         return new ResponseEntity<>(DTOUtils.toClientDTO(client), HttpStatus.CREATED);
@@ -80,10 +83,11 @@ public class ClientController {
     public HttpStatus updateClient(@RequestParam(name = "clientId") String clientId,
                                    @RequestParam(name = "name") String name,
                                    @RequestParam(name = "lastName") String lastName,
-                                   @RequestParam(name = "description") String description) throws Exception {
+                                   @RequestParam(name = "description") String description,
+                                   @RequestParam(name = "paymentIds") List<String> paymentIds) throws Exception {
 
         validate(clientId);
-        clientService.updateClient(DTOUtils.toClientDTO(clientId, name, lastName, description));
+        clientService.updateClient(DTOUtils.toClientDTO(clientId, name, lastName, description, paymentIds));
         log.info("Updated client {}", clientId);
 
         return HttpStatus.ACCEPTED;
